@@ -10,11 +10,12 @@ app = Bottle()
 def handle_slash_command():
     # Extract the trigger_id from the slash command
     trigger_id = request.forms.get('trigger_id')
+    channel_id = request.forms.get('channel_id')
 
     # Define the dialog
     dialog = {
         "trigger_id": trigger_id,
-        "url": "https://8111-2a09-bac5-d45c-16d2-00-246-79.ngrok-free.app/submit-form",
+        "url": "https://81ea-116-101-122-170.ngrok-free.app/submit-form",
         "dialog": {
             "callback_id": "leave-application",
             "title": "Leave Application",
@@ -48,7 +49,7 @@ def handle_slash_command():
             ],
             "submit_label": "Submit",
             "notify_on_cancel": True,
-            "state": ""
+            "state": channel_id
         }
     }
 
@@ -66,6 +67,7 @@ def handle_slash_command():
 def submit_form():
     # Parse the JSON payload
     data = request.json  # Use request.json to automatically parse the JSON payload
+    channel_id = data['state']
 
     # Extract form fields directly from 'submission'
     reason = data['submission']['reason']
@@ -91,8 +93,7 @@ def submit_form():
     # Log the constructed leave application message for debugging
 
     # Assuming you have a function to post the message to a Mattermost channel
-    channel_id = "gxn7pggkujbgik651x4ha8x7oo"  # Example channel ID
-    print(leave_application_msg)
+    # channel_id = "gxn7pggkujbgik651x4ha8x7oo"  # Example channel ID
     post_message_to_mattermost(leave_application_msg, channel_id)
 
     return 'Form submitted successfully'
